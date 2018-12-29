@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+
 const char bibliotekaPath[] = "../biblioteka/";
 
 int main(int argc, char *argv[]) {
@@ -29,18 +33,27 @@ int main(int argc, char *argv[]) {
             strcpy(filePath, bibliotekaPath);
 
             char const* const fileName = strcat(filePath, dir->d_name);
-            printf("%s\n", fileName);
+            //printf("\x1B[31m" "%s\n" "\x1B[0m", fileName);
 
             FILE* file = fopen(fileName, "r");
 
             if (file != NULL) {
                 char line[256];
+                int count = 0;
 
                 while (fgets(line, sizeof(line), file)) {
                     if (strstr(line, argv[1])){
-                        fprintf(stdout, "%s", line);
+                        //fprintf(stdout, "%s", line);
+                        count++;
                     }
                 }
+
+                if (count) {
+                    printf(KGRN "%s" KNRM " Hits: %d\n", dir->d_name, count);
+                } else {
+                    printf(KRED "%s\n", dir->d_name);
+                }
+
                 fclose(file);
             }
         }
