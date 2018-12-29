@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 const char bibliotekaPath[] = "../biblioteka/";
 
@@ -13,6 +14,8 @@ int main(int argc, char *argv[]) {
         printf("Program potrzebuje frazy do wyszukiwania w bibliotece.\n");
         return EXIT_FAILURE;
     }
+
+    clock_t beginTime = clock();
 
     biblioteka = opendir(bibliotekaPath);
 
@@ -43,6 +46,10 @@ int main(int argc, char *argv[]) {
         }
         closedir(biblioteka);
     }
+
+    clock_t endTime = clock();
+
+    printf("Czas wykonania: %fs", (double)(endTime - beginTime) / CLOCKS_PER_SEC);
 
     return 0;
 }
