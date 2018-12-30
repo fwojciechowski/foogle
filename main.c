@@ -8,7 +8,7 @@
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"
 
-char bibliotekaPath[50];
+char bibliotekaPath[100];
 const int gRecordsSize = 1000;
 
 struct Record {
@@ -53,11 +53,14 @@ int main(int argc, char *argv[]) {
 
     if ( argc != 3 ) {
         printf("Program potrzebuje lokalizacji biblioteki oraz frazy do wyszukiwania w bibliotece.\n\n");
-        printf("Przykład:\nfoogle ./biblioteka/ pomidor\n");
+        printf("Przykład:\n./foogle ./biblioteka pomidor\n");
         return EXIT_FAILURE;
     }
 
     strcpy(bibliotekaPath, argv[1]);
+    if (bibliotekaPath[ strlen(bibliotekaPath) - 1 ] != '/') {
+        strcat(bibliotekaPath, "/");
+    }
 
     clock_t beginTime = clock();
 
@@ -81,7 +84,7 @@ int main(int argc, char *argv[]) {
             if (count) {
                 printf(KGRN "%s" KNRM " Hits: %d\n", records[i].fullPath, count);
             } else {
-                printf(KRED "%s\n", records[i].fullPath);
+                printf(KRED "%s\n" KNRM, records[i].fullPath);
             }
 
             fclose(file);
