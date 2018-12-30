@@ -10,7 +10,7 @@
 #define KYEL  "\x1B[33m"
 
 char bibliotekaPath[200];
-const int gRecordsSize = 1200;
+const int gRecordsSize = 1200; // maksymalna liczba rekordow do wykorzystania
 
 struct Record {
     char name[100];
@@ -66,12 +66,12 @@ int main(int argc, char *argv[]) {
         strcat(bibliotekaPath, "/");
     }
 
-    clock_t beginTime = clock();
-
     if (initializeLibrary(records, &recordsSize) == 1) {
-        printf("Błąd przy inicjalizacji biblioteki.\n\n");
+        printf("Błąd przy inicjalizacji biblioteki. Prawdopodobnie program nie odnalazł podanej ścieżki.\n\n");
         return EXIT_FAILURE;
     }
+
+    clock_t beginTime = clock();
 
     printf("foogle - wyszukiwarka fraz w bibliotece\n\n");
 
@@ -79,6 +79,7 @@ int main(int argc, char *argv[]) {
 
     printf("Przeszukiwanie %d rekordów...\n\n", recordsSize);
 
+    // Glowna petla for do przyszlego zrownoleglenia.
     for (int i = 0; i < recordsSize; i++) {
         FILE* file = fopen(records[i].fullPath, "r");
 
@@ -103,6 +104,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // Czesc przekazujaca wyniki dalej (w tej chwili wydruk na ekran)
     if (resultsSize == 0) {
         printf(KRED "Brak wyników.\n\n" KNRM);
     } else {
