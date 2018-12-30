@@ -7,17 +7,18 @@
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"
+#define KYEL  "\x1B[33m"
 
-char bibliotekaPath[100];
-const int gRecordsSize = 1000;
+char bibliotekaPath[200];
+const int gRecordsSize = 1200;
 
 struct Record {
-    char name[50];
-    char fullPath[100];
+    char name[100];
+    char fullPath[200];
 };
 
 struct Result {
-    char name[50];
+    char name[100];
     int hits;
 };
 
@@ -40,6 +41,8 @@ int initializeLibrary(struct Record library[], int* size) {
             (*size)++;
         }
         closedir(biblioteka);
+    } else {
+        status = 1;
     }
 
     return status;
@@ -49,6 +52,7 @@ int main(int argc, char *argv[]) {
     struct Record records[gRecordsSize];
     int recordsSize = 0;
     struct Result results[gRecordsSize];
+    struct Result *r = results;
     int resultsSize = 0;
 
     if ( argc != 3 ) {
@@ -64,9 +68,14 @@ int main(int argc, char *argv[]) {
 
     clock_t beginTime = clock();
 
-    initializeLibrary(records, &recordsSize);
+    if (initializeLibrary(records, &recordsSize) == 1) {
+        printf("Błąd przy inicjalizacji biblioteki.\n\n");
+        return EXIT_FAILURE;
+    }
 
-    printf("Foogle - wyszukiwarka fraz w bibliotece\n");
+    printf("foogle - wyszukiwarka fraz w bibliotece\n\n");
+
+    printf("Szukanie frazy: " KYEL "%s" KNRM "\n\n", argv[2]);
 
     for (int i = 0; i < recordsSize; i++) {
         FILE* file = fopen(records[i].fullPath, "r");
@@ -82,12 +91,21 @@ int main(int argc, char *argv[]) {
             }
 
             if (count) {
-                printf(KGRN "%s" KNRM " Hits: %d\n", records[i].fullPath, count);
-            } else {
-                printf(KRED "%s\n" KNRM, records[i].fullPath);
+                r->hits = count;
+                strcpy(r->name, records[i].name);
+                resultsSize++;
+                r++;
             }
 
             fclose(file);
+        }
+    }
+
+    if (resultsSize == 0) {
+        printf(KRED "Brak wyników.\n\n" KNRM);
+    } else {
+        for (int i = 0; i < resultsSize; i++) {
+            printf(KGRN "%s" KNRM " Hits: %d\n", results[i].name, results[i].hits);
         }
     }
 
