@@ -77,6 +77,8 @@ int main(int argc, char *argv[]) {
 
     printf("Szukanie frazy: " KYEL "%s" KNRM "\n\n", argv[2]);
 
+    printf("Przeszukiwanie %d rekordów...\n\n", recordsSize);
+
     for (int i = 0; i < recordsSize; i++) {
         FILE* file = fopen(records[i].fullPath, "r");
 
@@ -111,7 +113,7 @@ int main(int argc, char *argv[]) {
 
     clock_t endTime = clock();
 
-    printf("Czas wykonania: %fs\n", (double)(endTime - beginTime) / CLOCKS_PER_SEC);
+    printf("\nCzas wykonania: %fs\n", (double)(endTime - beginTime) / CLOCKS_PER_SEC);
 
     return 0;
 }
