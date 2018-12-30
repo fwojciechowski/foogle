@@ -8,7 +8,7 @@
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"
 
-const char bibliotekaPath[] = "../biblioteka/";
+char bibliotekaPath[50];
 const int gRecordsSize = 1000;
 
 struct Record {
@@ -51,10 +51,13 @@ int main(int argc, char *argv[]) {
     struct Result results[gRecordsSize];
     int resultsSize = 0;
 
-    if ( argc != 2 ) {
-        printf("Program potrzebuje frazy do wyszukiwania w bibliotece.\n");
+    if ( argc != 3 ) {
+        printf("Program potrzebuje lokalizacji biblioteki oraz frazy do wyszukiwania w bibliotece.\n\n");
+        printf("Przykład:\nfoogle ./biblioteka/ pomidor\n");
         return EXIT_FAILURE;
     }
+
+    strcpy(bibliotekaPath, argv[1]);
 
     clock_t beginTime = clock();
 
@@ -70,7 +73,7 @@ int main(int argc, char *argv[]) {
             int count = 0;
 
             while (fgets(line, sizeof(line), file)) {
-                if (strstr(line, argv[1])){
+                if (strstr(line, argv[2])){
                     count++;
                 }
             }
@@ -87,7 +90,7 @@ int main(int argc, char *argv[]) {
 
     clock_t endTime = clock();
 
-    printf("Czas wykonania: %fs", (double)(endTime - beginTime) / CLOCKS_PER_SEC);
+    printf("Czas wykonania: %fs\n", (double)(endTime - beginTime) / CLOCKS_PER_SEC);
 
     return 0;
 }
