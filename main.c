@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
+#include <omp.h>
 
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -10,7 +10,7 @@
 #define KYEL  "\x1B[33m"
 
 char bibliotekaPath[200];
-const int gRecordsSize = 1200; // maksymalna liczba rekordow do wykorzystania
+const int gRecordsSize = 3000; // maksymalna liczba rekordow do wykorzystania
 
 struct Record {
     char name[100];
@@ -30,7 +30,7 @@ int initializeLibrary(struct Record library[], int* size) {
     biblioteka = opendir(bibliotekaPath);
 
     if (biblioteka) {
-        while ((dir = readdir(biblioteka)) != NULL && (*size) < gRecordsSize+1) {
+        while ((dir = readdir(biblioteka)) != NULL && (*size) < gRecordsSize) {
             if (dir->d_type != DT_REG) continue; // katalogi nas nie interesuja
 
             strcpy(library->name, dir->d_name);
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    clock_t beginTime = clock();
+    double beginTime = omp_get_wtime();
 
     printf("foogle - wyszukiwarka fraz w bibliotece\n\n");
 
@@ -80,13 +80,17 @@ int main(int argc, char *argv[]) {
     printf("Przeszukiwanie %d rekordów...\n\n", recordsSize);
 
     // Glowna petla for do przyszlego zrownoleglenia.
+    char line[256];
+    int count;
+    FILE* file;
+    #pragma omp parallel for shared(r, resultsSize, records) private(file, line, count) //num_threads(4)
     for (int i = 0; i < recordsSize; i++) {
-        FILE* file = fopen(records[i].fullPath, "r");
+
+        count = 0;
+
+        file = fopen(records[i].fullPath, "r");
 
         if (file != NULL) {
-            char line[256];
-            int count = 0;
-
             while (fgets(line, sizeof(line), file)) {
                 if (strstr(line, argv[2])){
                     count++;
@@ -94,10 +98,13 @@ int main(int argc, char *argv[]) {
             }
 
             if (count) {
-                r->hits = count;
-                strcpy(r->name, records[i].name);
-                resultsSize++;
-                r++;
+                #pragma omp critical
+                {
+                    r->hits = count;
+                    strcpy(r->name, records[i].name);
+                    resultsSize++;
+                    r++;
+                };
             }
 
             fclose(file);
@@ -113,9 +120,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    clock_t endTime = clock();
+    double endTime = omp_get_wtime();
 
-    printf("\nCzas wykonania: %fs\n", (double)(endTime - beginTime) / CLOCKS_PER_SEC);
+    printf("\nCzas wykonania: %fs\n", (endTime - beginTime));
 
     return 0;
 }
