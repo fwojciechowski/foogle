@@ -19,7 +19,7 @@ $ make
 Przygotowanie biblioteki (opcjonalnie)
 --------------------------------------
 
-Do projektu dołączony jest skrypt prepare_biblioteka.sh. Jego działanie polega na ściągnięciu z polskiej Wikipedii ok. 1000 artykułów, których tytuły podane są w pliku mock_data.txt. Artykuły są pozbawiane tagów HTML. Wystarczy uruchomić podany skrypt.
+Do projektu dołączony jest skrypt prepare_biblioteka.sh. Jego działanie polega na ściągnięciu z polskiej Wikipedii ok. 3000 artykułów, których tytuły podane są w pliku mock_data.txt. Artykuły są pozbawiane tagów HTML. Wystarczy uruchomić podany skrypt.
 
 Do działania potrzebne jest utility html2text. Przykładowa instalacja w systemie Ubuntu:
 
@@ -33,7 +33,7 @@ Skrypt wystarczy odpalić poleceniem:
 $ ./prepare_biblioteka.sh
 ```
 
-Jego wykonanie może zająć parę minut. Po ukończeniu pojawi się w kataloku biblioteka ponad 20MB przykładowych informacji do przeszukania.
+Jego wykonanie może zająć parę minut. Po ukończeniu pojawi się w kataloku biblioteka ponad 35MB przykładowych informacji do przeszukania.
 
 Uruchamianie
 ------------
