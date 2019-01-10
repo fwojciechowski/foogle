@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <omp.h>
 
+// Definicja kolorow do terminala
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"
@@ -89,12 +90,12 @@ void findPhrase(const struct Record records[], const int* recordsSize, struct Re
 }
 
 int main(int argc, char *argv[]) {
-    struct Record records[gRecordsSize];
+    struct Record records[gRecordsSize];  // tablica zawierajaca dane o plikach z biblioteki
     int recordsSize = 0;
-    struct Result results[gRecordsSize];
+    struct Result results[gRecordsSize];  // tablica na wyniki poszukiwan
     struct Result *r = results;
     int resultsSize = 0;
-    char phrase[256];
+    char phrase[256];                     // szukana fraza
 
     // Sprawdzamy, czy lokalizacja biblioteki oraz szukana fraza zostaly podane.
     if ( argc != 3 ) {
