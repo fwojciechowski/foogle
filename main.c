@@ -48,12 +48,17 @@ int initializeLibrary(struct Record library[], int* size) {
     return status;
 }
 
+int findPhrase() {
+
+}
+
 int main(int argc, char *argv[]) {
     struct Record records[gRecordsSize];
     int recordsSize = 0;
     struct Result results[gRecordsSize];
     struct Result *r = results;
     int resultsSize = 0;
+    char phrase[256];
 
     if ( argc != 3 ) {
         printf("Program potrzebuje lokalizacji biblioteki oraz frazy do wyszukiwania w bibliotece.\n\n");
@@ -65,6 +70,8 @@ int main(int argc, char *argv[]) {
     if (bibliotekaPath[ strlen(bibliotekaPath) - 1 ] != '/') {
         strcat(bibliotekaPath, "/");
     }
+
+    strcpy(phrase, argv[2]);
 
     if (initializeLibrary(records, &recordsSize) == 1) {
         printf("Błąd przy inicjalizacji biblioteki. Prawdopodobnie program nie odnalazł podanej ścieżki.\n\n");
@@ -83,7 +90,7 @@ int main(int argc, char *argv[]) {
     char line[256];
     int count;
     FILE* file;
-    #pragma omp parallel for shared(r, resultsSize, records) private(file, line, count) //num_threads(4)
+    #pragma omp parallel for shared(r, resultsSize, records, phrase) private(file, line, count) num_threads(4)
     for (int i = 0; i < recordsSize; i++) {
 
         count = 0;
@@ -92,7 +99,7 @@ int main(int argc, char *argv[]) {
 
         if (file != NULL) {
             while (fgets(line, sizeof(line), file)) {
-                if (strstr(line, argv[2])){
+                if (strstr(line, phrase)){
                     count++;
                 }
             }
@@ -111,6 +118,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    double endTime = omp_get_wtime();
+
     // Czesc przekazujaca wyniki dalej (w tej chwili wydruk na ekran)
     if (resultsSize == 0) {
         printf(KRED "Brak wyników.\n\n" KNRM);
@@ -120,9 +129,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    double endTime = omp_get_wtime();
-
-    printf("\nCzas wykonania: %fs\n", (endTime - beginTime));
+    printf("\nCzas szukania: %fs\n", (endTime - beginTime));
 
     return 0;
 }
