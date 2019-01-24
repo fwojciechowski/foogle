@@ -87,6 +87,45 @@ void findPhrase(const struct Record record, struct Result* r, const char phrase[
 
 }
 
+
+// Zapisywanie wyniku do pliku
+void printResultsToFile(struct Result results[], int resultsSize) {
+    int i = 0;
+
+    FILE *f = fopen("results.json", "w");
+    if (f == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+
+    // Start pliku JSON
+
+    fprintf(f, "{\n");
+
+    fprintf(f, "\t\"results\": [\n");
+
+    for (i = 0; i < resultsSize; i++) {
+        if (i > 0) fprintf(f, ",");
+
+        fprintf(f, "\t\t{\n");
+
+        fprintf(f, "\t\t\"name\":\"%s\",\n", results[i].name);
+        fprintf(f, "\t\t\"hits\":\"%d\"\n", results[i].hits);
+
+        fprintf(f, "\t\t}\n");
+        //fprintf(f, KGRN "%s" KNRM " Hits: %d\n", results[i].name, results[i].hits);
+    }
+
+    fprintf(f, "\t]\n");
+
+    // Koniec pliku JSON
+
+    fprintf(f, "}\n");
+
+    fclose(f);
+}
+
 int main(int argc, char *argv[]) {
     struct Record records[gRecordsSize];  // tablica zawierajaca dane o plikach z biblioteki
     int recordsSize, currentRecordNumber = 0;
@@ -247,8 +286,9 @@ int main(int argc, char *argv[]) {
         }
 
         printf("\nCzas szukania: %fs\n", (endTime - beginTime));
-    }
 
+        printResultsToFile(results, resultsSize);
+    }
 
     printf(KRED "Proces %d konczy dzialanie.\n" KNRM, mynum);
     //if (mynum == 0)
@@ -257,3 +297,4 @@ int main(int argc, char *argv[]) {
     //return 0;
     exit(0);
 }
+

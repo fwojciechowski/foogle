@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>foogle</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div class="container">
+    <h1>foogle</h1>
+    <fieldset>
+        <form action="/" method="post">
+            <input name="phrase" type="text" class="ghost-input" placeholder="Wyszukaj frazę" required>
+            <input type="submit" class="ghost-button" value="Szukaj">
+        </form>
+    </fieldset>
+    <% if(results){ %>
+
+    <h2>Szukana fraza: <%= phrase %></h2>
+
+    <ul>
+        <% results.forEach(function(result) { %>
+        <li>
+            <a href="https://pl.wikipedia.org/wiki/<%= result.name.substr(0, result.name.length-4); %>">
+                <%= result.name.substr(0, result.name.length-4); %>
+            </a>
+            <b>HITS: <%= result.hits %></b>
+        </li>
+        <% }); %>
+    </ul>
+    <% } %>
+</div>
+</body>
+</html>
