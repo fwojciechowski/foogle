@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
             int flag = 1;
 
             // Sprawdz czy wciaz jest praca do wykonania
-            if (searchedRecords >= recordsSize && closedProcesses == nprocs - 1) isThereWork = THERE_IS_NO_WORK;
+            //if (closedProcesses == nprocs - 1) isThereWork = THERE_IS_NO_WORK;
 
              do {
                 // Sprawdz czy ktos pyta o prace
@@ -202,7 +202,8 @@ int main(int argc, char *argv[]) {
                 }
             } while (flag);
 
-
+            // Sprawdz czy z powodu braku pracy wyslalismy juz wszystkich do domow
+            if (closedProcesses == nprocs - 1) isThereWork = THERE_IS_NO_WORK;
 
         } else {
             // Worker thread
@@ -217,10 +218,7 @@ int main(int argc, char *argv[]) {
             if (receiveBuff == THERE_IS_WORK) {
                 struct Result result;
 
-
                 MPI_Recv(&receiveBuff, 1, MPI_INT, 0, WORK, MPI_COMM_WORLD, &status);
-
-                //printf("Proces %d otrzymal %s.\n", mynum, records[receiveBuff].name);
 
                 findPhrase(records[receiveBuff], &result, phrase);
 
@@ -235,8 +233,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    //findPhrase(records, &recordsSize, r, &resultsSize, phrase);
-
     double endTime = MPI_Wtime();
 
     // Czesc przekazujaca wyniki dalej (w tej chwili wydruk na ekran)
@@ -245,7 +241,7 @@ int main(int argc, char *argv[]) {
         if (resultsSize == 0) {
             printf(KRED "Brak wyników.\n\n" KNRM);
         } else {
-            for (int i = 0; i < resultsSize; i++) {
+            for (i = 0; i < resultsSize; i++) {
                 printf(KGRN "%s" KNRM " Hits: %d\n", results[i].name, results[i].hits);
             }
         }
