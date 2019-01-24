@@ -43,3 +43,24 @@ Do działania program potrzebuje ścieżki do biblioteki z plikami tekstowymi or
 ```bash
 $ ./foogle ./biblioteka pomidor
 ```
+
+Część WWW
+------------
+
+Do uruchomienia serwera potrzebny jest node.js. Niniejszy program był testowany z wersją v10.5.0.
+
+W katalogu www należy uruchomić polecenie
+
+```bash
+$ npm install
+```
+
+Po ściągnięciu wymaganych komponentów można uruchomić serwer poleceniem
+```bash
+$ node app
+```
+
+Interfejs powinien byc dostepny pod adresem http://localhost:3000/ .
+
+UWAGA: Do poprawnego działania interfejsu należy sprawdzić skrypt foogle_phrase.sh . Powinien on zawierać poprawną ścieżkę do biblioteki oraz samego programu foogle. 
+Repozytorium zakłada kompilację przy użyciu cmake, stąd w innych warunkach ścieżka może być niepoprawna.
